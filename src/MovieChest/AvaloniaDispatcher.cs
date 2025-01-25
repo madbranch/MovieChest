@@ -1,16 +1,24 @@
 using MovieChest.ComponentModel;
 using System;
+using System.Threading;
 
 namespace MovieChest;
 
-public sealed class AvaloniaDispatcher : IDispatcher
+public sealed class AvaloniaDispatcher(Avalonia.Threading.Dispatcher dispatcher) : IDispatcher
 {
-    private readonly Avalonia.Threading.Dispatcher dispatcher = Avalonia.Threading.Dispatcher.UIThread;
-
     public bool IsSynchronized => dispatcher.CheckAccess();
 
-    public void BeginInvoke(Delegate method, params object[] args) => throw new NotImplementedException();
-    public void Invoke(Action action) => dispatcher.Invoke(action);
-    public object Invoke(Delegate method, params object[] args) => throw new NotImplementedException();
+    public void BeginInvoke(Action action)
+        => dispatcher.Post(action);
+
+    public void BeginInvoke(SendOrPostCallback callback, object? arg)
+        => dispatcher.Post(callback, arg);
+
+    public void Invoke(Action action)
+        => dispatcher.Invoke(action);
+
+    public void Invoke(SendOrPostCallback callback, object? arg)
+        => dispatcher.Invoke(() => callback(arg));
+
     public T Invoke<T>(Func<T> function) => dispatcher.Invoke(function);
 }
