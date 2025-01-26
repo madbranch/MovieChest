@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EBDFA294
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieChest.Tests", "tests\MovieChest.Tests\MovieChest.Tests.csproj", "{B88BD0F1-EBB0-44BD-B4AF-6F6FEC5BEA58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieChest.ComponentModel", "src\MovieChest.ComponentModel\MovieChest.ComponentModel.csproj", "{4C21A9BC-66FD-48B4-9253-EAD248604949}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,9 +30,14 @@ Global
 		{B88BD0F1-EBB0-44BD-B4AF-6F6FEC5BEA58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B88BD0F1-EBB0-44BD-B4AF-6F6FEC5BEA58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B88BD0F1-EBB0-44BD-B4AF-6F6FEC5BEA58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C21A9BC-66FD-48B4-9253-EAD248604949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C21A9BC-66FD-48B4-9253-EAD248604949}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C21A9BC-66FD-48B4-9253-EAD248604949}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C21A9BC-66FD-48B4-9253-EAD248604949}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E5CF5DB4-C5B3-4187-B1F6-1788142422B4} = {5AD14A10-64D9-42FC-9932-DA1BA71DFFB5}
 		{B88BD0F1-EBB0-44BD-B4AF-6F6FEC5BEA58} = {EBDFA294-286C-4211-BDAF-56C43F6EDE4E}
+		{4C21A9BC-66FD-48B4-9253-EAD248604949} = {5AD14A10-64D9-42FC-9932-DA1BA71DFFB5}
 	EndGlobalSection
 EndGlobal

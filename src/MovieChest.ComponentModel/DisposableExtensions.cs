@@ -10,4 +10,7 @@ public static class DisposableExtensions
         compositeDisposable.Add(disposable);
         return disposable;
     }
+
+    public static void WhenDisposed(this ICompositeDisposable compositeDisposable, Action doThis)
+        => compositeDisposable.Add(new ActionDisposable(doThis));
 }
