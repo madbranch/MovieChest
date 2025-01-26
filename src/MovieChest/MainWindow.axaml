@@ -13,16 +13,20 @@
       <Button Content="Add" />
     </StackPanel>
 
-    <ListBox Grid.Row="1" ItemsSource="{Binding Movies}" SelectedItem="{Binding SelectedMovie}">
-      <ListBox.ItemTemplate>
-        <DataTemplate DataType="{x:Type vm:MovieItem}">
-          <StackPanel>
-            <TextBlock Text="{Binding Title}" FontWeight="Bold" />
-            <TextBlock Text="{Binding Description}" />
-          </StackPanel>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
+    <DockPanel Grid.Row="1">
+      <TextBox Text="{Binding Path=MovieFilter, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top" />
+
+      <ListBox ItemsSource="{Binding FilteredMovies}" SelectedItem="{Binding SelectedMovie}">
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="{x:Type vm:MovieItem}">
+            <StackPanel>
+              <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+              <TextBlock Text="{Binding Description}" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </DockPanel>
 
     <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,4,0,0">
       <StackPanel Orientation="Horizontal">
