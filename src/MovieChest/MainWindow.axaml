@@ -1,12 +1,38 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:MovieChest"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="MovieChest.MainWindow"
-        x:DataType="vm:MainViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="MovieChest">
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:MovieChest"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+  x:Class="MovieChest.MainWindow"
+  x:DataType="vm:MainViewModel"
+  Icon="/Assets/avalonia-logo.ico"
+  Title="MovieChest">
+  <Grid Margin="12,8" RowDefinitions="Auto,*,Auto">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,4">
+      <Button Content="Add" />
+    </StackPanel>
 
+    <ListBox Grid.Row="1" ItemsSource="{Binding Movies}" SelectedItem="{Binding SelectedMovie}">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="{x:Type vm:MovieItem}">
+          <StackPanel>
+            <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+            <TextBlock Text="{Binding Description}" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,4,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Button Content="Delete" Command="{Binding DeleteSelectedMovieCommand}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+        <Button Content="Edit" Margin="0,0,4,0" />
+        <Button Content="Open" />
+      </StackPanel>
+    </DockPanel>
+  </Grid>
 </Window>
