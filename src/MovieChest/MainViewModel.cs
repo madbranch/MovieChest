@@ -4,10 +4,7 @@ namespace MovieChest;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private readonly IMovieCollectionSerializer movieCollectionSerializer;
-
-    public MainViewModel(IMovieCollectionSerializer movieCollectinSerializer)
+    public MainViewModel()
     {
-        this.movieCollectionSerializer = movieCollectinSerializer;
     }
 }

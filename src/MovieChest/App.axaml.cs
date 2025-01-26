@@ -53,8 +53,7 @@ public partial class App : Application
 
     private MainViewModel CreateViewModel()
     {
-        FakeMovieCollectionSerializer movieCollectionSerializer = new();
-        MainViewModel viewModel = new(movieCollectionSerializer);
+        MainViewModel viewModel = new();
         return viewModel;
     }
 
