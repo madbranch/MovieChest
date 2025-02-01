@@ -3,7 +3,7 @@ using System;
 
 namespace MovieChest.ComponentModel;
 
-public class ViewModelBase : ObservableObject, ICompositeDisposable
+public class ViewModelBase : ObservableValidator, ICompositeDisposable
 {
     private readonly CompositeDisposable compositeDisposable = new();
 

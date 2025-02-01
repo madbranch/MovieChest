@@ -18,6 +18,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        RemoveDataAnnotationsValidator();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -38,6 +40,18 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void RemoveDataAnnotationsValidator()
+    {
+        int i = 0;
+        while (i < BindingPlugins.DataValidators.Count)
+        {
+            if (BindingPlugins.DataValidators[i] is DataAnnotationsValidationPlugin)
+                BindingPlugins.DataValidators.RemoveAt(i);
+            else
+                ++i;
+        }
     }
 
     private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
