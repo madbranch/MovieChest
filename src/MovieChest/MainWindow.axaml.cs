@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using MovieChest.ComponentModel;
-using System;
 using System.Threading.Tasks;
 
 namespace MovieChest;
@@ -13,6 +12,8 @@ public partial class MainWindow : Window
         this.WhenActivated<MainViewModel>((vm, d) =>
         {
             vm.ConfirmMovieDeletion.Register(ConfirmMovieDeletionAsync)
+                .DisposeWith(d);
+            vm.EditMovie.Register(EditMovieAsync)
                 .DisposeWith(d);
         });
     }
@@ -31,6 +32,25 @@ public partial class MainWindow : Window
         {
             "DeleteMovie" => MovieDeletionConfirmation.DeleteMovie,
             _ => MovieDeletionConfirmation.DontDeleteMovie,
+        };
+    }
+
+    private async Task<MovieItem?> EditMovieAsync(MovieItem movie)
+    {
+        EditMovieViewModel viewModel = new()
+        {
+            Title = movie.Title,
+            Description = movie.Description,
+        };
+        EditMovieDialog view = new() { DataContext = viewModel };
+        if (await view.ShowDialog<bool?>(this) != true)
+        {
+            return null;
+        }
+        return new MovieItem
+        {
+            Title = viewModel.Title,
+            Description = viewModel.Description,
         };
     }
 }

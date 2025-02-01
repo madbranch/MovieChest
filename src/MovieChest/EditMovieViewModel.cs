@@ -1,10 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using MovieChest.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace MovieChest;
 
-public partial class EditMovieViewModel : ViewModelBase
+public partial class EditMovieViewModel : ObservableValidator
 {
     [ObservableProperty]
     [Required]

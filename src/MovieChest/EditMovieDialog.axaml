@@ -1,0 +1,47 @@
+﻿<Window x:Class="MovieChest.EditMovieDialog"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:MovieChest"
+        Title="Edit Movie"
+        d:DesignWidth="800"
+        d:DesignHeight="450"
+        x:DataType="vm:EditMovieViewModel"
+        SizeToContent="Height"
+        Width="500"
+        mc:Ignorable="d">
+  <StackPanel Margin="12,8,12,8">
+    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*">
+      <Label Target="TitleInput"
+             Content="Title"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Center" />
+      <TextBox x:Name="TitleInput"
+               Grid.Column="1"
+               Text="{Binding Title}"
+               VerticalAlignment="Center" />
+      <Label Grid.Row="1"
+             Target="DescriptionInput"
+             Content="Description"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Center" />
+      <TextBox x:Name="DescriptionInput"
+               Grid.Row="1"
+               Grid.Column="1"
+               Text="{Binding Description}"
+               VerticalAlignment="Center" />
+    </Grid>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button x:Name="CancelButton"
+              Content="Cancel"
+              IsCancel="True"
+              Click="CancelButton_Click"
+              Margin="0,0,8,0" />
+      <Button x:Name="OkButton"
+              Content="OK"
+              IsDefault="True"
+              Click="OkButton_Click" />
+    </StackPanel>
+  </StackPanel>
+</Window>

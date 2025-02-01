@@ -43,6 +43,7 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DeleteSelectedMovieCommand))]
+    [NotifyCanExecuteChangedFor(nameof(EditSelectedMovieCommand))]
     private MovieItem? selectedMovie;
 
     [RelayCommand(CanExecute = nameof(CanDeleteSelectedMovie))]
@@ -68,6 +69,37 @@ public partial class MainViewModel : ViewModelBase
 
     public IInteraction<MovieItem, MovieDeletionConfirmation> ConfirmMovieDeletion => confirmMovieDeletion;
     private readonly Interaction<MovieItem, MovieDeletionConfirmation> confirmMovieDeletion = new();
+
+    [RelayCommand(CanExecute = nameof(CanEditSelectedMovie))]
+    private async Task EditSelectedMovieAsync()
+    {
+        if (SelectedMovie is not MovieItem selectedMovie)
+        {
+            return;
+        }
+
+        if (await editMovie.HandleAsync(selectedMovie) is not MovieItem editedMovie)
+        {
+            return;
+        }
+
+        int selectedMovieIndex = Movies.IndexOf(selectedMovie);
+        
+        if (selectedMovieIndex == -1)
+        {
+            return;
+        }
+
+        Movies[selectedMovieIndex] = editedMovie;
+        SelectedMovie = editedMovie;
+        UpdateFilteredMovies();
+    }
+
+    private bool CanEditSelectedMovie()
+        => SelectedMovie is not null;
+
+    public IInteraction<MovieItem, MovieItem?> EditMovie => editMovie;
+    private readonly Interaction<MovieItem, MovieItem?> editMovie = new();
 
     private ImmutableArray<MovieItem> GetFilteredMovies()
         => string.IsNullOrWhiteSpace(MovieFilter)
