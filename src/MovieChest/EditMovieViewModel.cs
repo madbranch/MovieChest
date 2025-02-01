@@ -6,6 +6,7 @@ namespace MovieChest;
 public partial class EditMovieViewModel : ObservableValidator
 {
     [ObservableProperty]
+    [NotifyDataErrorInfo]
     [Required]
     [MinLength(1)]
     [MaxLength(100)]
