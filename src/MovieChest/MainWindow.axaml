@@ -1,15 +1,17 @@
-<Window xmlns="https://github.com/avaloniaui"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:vm="using:MovieChest"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-  x:Class="MovieChest.MainWindow"
-  x:DataType="vm:MainViewModel"
-  Icon="/Assets/avalonia-logo.ico"
-  Title="MovieChest">
-  <Grid Margin="12,8" RowDefinitions="Auto,*,Auto">
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,4">
+﻿<Window x:Class="MovieChest.MainWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:MovieChest"
+        Title="Movie Chest"
+        d:DesignWidth="800"
+        d:DesignHeight="450"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        mc:Ignorable="d">
+  <Grid RowDefinitions="Auto,*,Auto" Margin="12,8">
+    <StackPanel Orientation="Horizontal" Margin="0,0,0,4" HorizontalAlignment="Right">
       <Button Content="Add" />
     </StackPanel>
 

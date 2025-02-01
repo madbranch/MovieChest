@@ -1,7 +1,9 @@
 using Avalonia.Controls;
+using MovieChest.ComponentModel;
+using System;
+using System.Threading.Tasks;
 
 namespace MovieChest;
-
 
 public partial class MainWindow : Window
 {
@@ -10,11 +12,25 @@ public partial class MainWindow : Window
         InitializeComponent();
         this.WhenActivated<MainViewModel>((vm, d) =>
         {
+            vm.ConfirmMovieDeletion.Register(ConfirmMovieDeletionAsync)
+                .DisposeWith(d);
         });
     }
 
     private string? SelectDatabase(string initialDirectory)
     {
         return null;
+    }
+
+    private async Task<MovieDeletionConfirmation> ConfirmMovieDeletionAsync(MovieItem movie)
+    {
+        MessageBoxViewModel viewModel = new([new MessageBoxChoice("DontDeleteMovie", "Cancel"), new MessageBoxChoice("DeleteMovie", "Delete")], $"Do you want to delete the movie {movie.Title}?");
+        MessageBox view = new() { DataContext = viewModel };
+        await view.ShowDialog(this);
+        return viewModel.SelectedChoice?.Id switch
+        {
+            "DeleteMovie" => MovieDeletionConfirmation.DeleteMovie,
+            _ => MovieDeletionConfirmation.DontDeleteMovie,
+        };
     }
 }

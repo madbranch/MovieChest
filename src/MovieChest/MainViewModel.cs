@@ -5,6 +5,7 @@ using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MovieChest;
 
@@ -45,12 +46,18 @@ public partial class MainViewModel : ViewModelBase
     private MovieItem? selectedMovie;
 
     [RelayCommand(CanExecute = nameof(CanDeleteSelectedMovie))]
-    private void DeleteSelectedMovie()
+    private async Task DeleteSelectedMovieAsync()
     {
         if (SelectedMovie is not MovieItem selectedMovie)
         {
             return;
         }
+
+        if (await confirmMovieDeletion.HandleAsync(selectedMovie) == MovieDeletionConfirmation.DontDeleteMovie)
+        {
+            return;
+        }
+
         Movies.Remove(selectedMovie);
         SelectedMovie = null;
         UpdateFilteredMovies();
@@ -58,6 +65,9 @@ public partial class MainViewModel : ViewModelBase
 
     private bool CanDeleteSelectedMovie()
         => SelectedMovie is not null;
+
+    public IInteraction<MovieItem, MovieDeletionConfirmation> ConfirmMovieDeletion => confirmMovieDeletion;
+    private readonly Interaction<MovieItem, MovieDeletionConfirmation> confirmMovieDeletion = new();
 
     private ImmutableArray<MovieItem> GetFilteredMovies()
         => string.IsNullOrWhiteSpace(MovieFilter)

@@ -6,6 +6,7 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AvaloniaNameGeneratorDefaultFieldModifier>public</AvaloniaNameGeneratorDefaultFieldModifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,4 +30,13 @@
   <ItemGroup>
     <ProjectReference Include="..\MovieChest.ComponentModel\MovieChest.ComponentModel.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <FilesToFormat Include="**/*.axaml" />
+  </ItemGroup>
+
+  <Target Name="Format XAML" AfterTargets="BeforeBuild">
+    <Exec Command="dotnet tool restore" />
+    <Exec Command="dotnet xstyler -i -f &quot;@(FilesToFormat, ',')&quot; -c &quot;$(ProjectDir)../../Settings.XamlStyler.json&quot;" />
+  </Target>
 </Project>

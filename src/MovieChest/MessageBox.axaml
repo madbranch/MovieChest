@@ -1,0 +1,30 @@
+﻿<Window x:Class="MovieChest.MessageBox"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:MovieChest"
+        Title="Movie Chest"
+        d:DesignWidth="800"
+        d:DesignHeight="450"
+        x:DataType="vm:MessageBoxViewModel"
+        SizeToContent="Height"
+        Width="500"
+        mc:Ignorable="d">
+  <StackPanel>
+    <TextBlock Text="{Binding Message}" />
+
+    <ItemsControl ItemsSource="{Binding Choices}" HorizontalAlignment="Right">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <UniformGrid Rows="1" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate DataType="{x:Type vm:MessageBoxChoice}">
+          <Button Content="{Binding Title}" Click="Button_Click" Margin="8,0,0,0" />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+</Window>

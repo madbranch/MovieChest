@@ -10,7 +10,7 @@ public class Interaction<TInput, TOutput> : IInteraction<TInput, TOutput>
 
     public IDisposable Register(Func<TInput, TOutput> handler)
     {
-        if (handler is not null || asyncHandler is not null)
+        if (this.handler is not null || asyncHandler is not null)
         {
             throw new InvalidOperationException("Handler is already registered.");
         }
@@ -20,11 +20,11 @@ public class Interaction<TInput, TOutput> : IInteraction<TInput, TOutput>
 
     public IDisposable Register(Func<TInput, Task<TOutput>> handler)
     {
-        if (handler is not null || asyncHandler is not null)
+        if (this.handler is not null || asyncHandler is not null)
         {
             throw new InvalidOperationException("Handler is already registered.");
         }
-        this.asyncHandler = handler;
+        asyncHandler = handler;
         return new ActionDisposable(() => asyncHandler = null);
     }
 
