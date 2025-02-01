@@ -11,8 +11,8 @@
         SizeToContent="Height"
         Width="500"
         mc:Ignorable="d">
-  <StackPanel>
-    <TextBlock Text="{Binding Message}" />
+  <StackPanel Margin="12,8,12,8">
+    <TextBlock Text="{Binding Message}" Margin="0,0,0,12" />
 
     <ItemsControl ItemsSource="{Binding Choices}" HorizontalAlignment="Right">
       <ItemsControl.ItemsPanel>
