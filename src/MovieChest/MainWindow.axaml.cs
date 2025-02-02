@@ -15,6 +15,8 @@ public partial class MainWindow : Window
                 .DisposeWith(d);
             vm.EditMovie.Register(EditMovieAsync)
                 .DisposeWith(d);
+            vm.AddMovie.Register(AddMovieAsync)
+                .DisposeWith(d);
         });
     }
 
@@ -43,6 +45,26 @@ public partial class MainWindow : Window
             Description = movie.Description,
         };
         EditMovieDialog view = new() { DataContext = viewModel };
+        if (await view.ShowDialog<bool?>(this) != true)
+        {
+            return null;
+        }
+        return new MovieItem
+        {
+            Title = viewModel.Title,
+            Description = viewModel.Description,
+        };
+    }
+
+    private async Task<MovieItem?> AddMovieAsync(MovieItem movie)
+    {
+        EditMovieViewModel viewModel = new()
+        {
+            Title = movie.Title,
+            Description = movie.Description,
+        };
+        EditMovieDialog view = new() { DataContext = viewModel };
+        view.Title = "New Movie";
         if (await view.ShowDialog<bool?>(this) != true)
         {
             return null;

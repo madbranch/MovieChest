@@ -25,11 +25,6 @@ public partial class MainViewModel : ViewModelBase
         Movies.Add(new MovieItem { Title = "Kung Pow", Description = "Best movie ever." });
         Movies.Add(new MovieItem { Title = "Up", Description = "Best animation movie ever." });
 
-        this.When()
-            .Any([nameof(MovieFilter)], UpdateFilteredMovies)
-            .Subscribe()
-            .DisposeWith(this);
-
         filteredMovies = GetFilteredMovies();
     }
 
@@ -37,6 +32,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private string? movieFilter;
+
+    partial void OnMovieFilterChanged(string? value)
+        => UpdateFilteredMovies();
 
     [ObservableProperty]
     private ImmutableArray<MovieItem> filteredMovies = [];
@@ -90,16 +88,39 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
 
+        SelectedMovie = null;
         Movies[selectedMovieIndex] = editedMovie;
-        SelectedMovie = editedMovie;
         UpdateFilteredMovies();
+        SelectedMovie = editedMovie;
     }
 
     private bool CanEditSelectedMovie()
         => SelectedMovie is not null;
 
+    [RelayCommand]
+    private async Task AddMovieAsync()
+    {
+        MovieItem newMovie = new()
+        {
+            Title = "Movie Title",
+            Description = "Movie Description",
+        };
+        if (await editMovie.HandleAsync(newMovie) is not MovieItem editedMovie)
+        {
+            return;
+        }
+
+        SelectedMovie = null;
+        Movies.Add(newMovie);
+        SelectedMovie = newMovie;
+        UpdateFilteredMovies();
+    }
+
     public IInteraction<MovieItem, MovieItem?> EditMovie => editMovie;
     private readonly Interaction<MovieItem, MovieItem?> editMovie = new();
+
+    public IInteraction<MovieItem, MovieItem?> AddMovie => addMovie;
+    private readonly Interaction<MovieItem, MovieItem?> addMovie = new();
 
     private ImmutableArray<MovieItem> GetFilteredMovies()
         => string.IsNullOrWhiteSpace(MovieFilter)

@@ -12,7 +12,7 @@
         mc:Ignorable="d">
   <Grid RowDefinitions="Auto,*,Auto" Margin="12,8">
     <StackPanel Orientation="Horizontal" Margin="0,0,0,4" HorizontalAlignment="Right">
-      <Button Content="Add" />
+      <Button Content="Add" Command="{Binding AddMovieCommand}" />
     </StackPanel>
 
     <DockPanel Grid.Row="1">
