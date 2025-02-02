@@ -12,7 +12,7 @@
         Width="500"
         mc:Ignorable="d">
   <StackPanel Margin="12,8,12,8">
-    <Grid RowDefinitions="Auto,8,Auto" ColumnDefinitions="Auto,4,*" Margin="0,0,0,8">
+    <Grid RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,4,Auto" ColumnDefinitions="Auto,4,*" Margin="0,0,0,8">
       <Label Target="TitleInput"
              Content="Title"
              HorizontalAlignment="Left"
@@ -31,6 +31,37 @@
                Grid.Column="2"
                Text="{Binding Description}"
                VerticalAlignment="Center" />
+      <Label Grid.Row="4"
+             Target="TagsInput"
+             Content="Tags"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Center" />
+      <TextBox x:Name="TagsInput"
+               Grid.Row="4"
+               Grid.Column="2"
+               Text="{Binding Tags}"
+               VerticalAlignment="Center" />
+      <Label Grid.Row="6"
+             Target="BrowseButton"
+             Content="File"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Center" />
+      <Grid Grid.Row="6" Grid.Column="2" ColumnDefinitions="*,Auto">
+        <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+        <Button x:Name="BrowseButton"
+                Grid.Column="1"
+                Content="Browse..."
+                Click="BrowseButton_Click" />
+      </Grid>
+      <TextBlock Grid.Row="8"
+                 Text="Volume Label"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center" />
+      <TextBlock Grid.Row="8"
+                 Grid.Column="2"
+                 Text="{Binding VolumeLabel}"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center" />
     </Grid>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
       <Button x:Name="CancelButton"

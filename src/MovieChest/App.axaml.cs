@@ -56,9 +56,6 @@ public partial class App : Application
 
     private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
-        _viewModel?.Dispose();
-        _viewModel = null;
-
         if (sender is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.Exit -= Desktop_Exit;

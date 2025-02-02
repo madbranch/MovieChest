@@ -16,9 +16,12 @@ public partial class MovieItem : ObservableObject
 
     [ObservableProperty]
     private string description = "";
+
+    [ObservableProperty]
+    private string tags = "";
 }
 
-public partial class MainViewModel : ViewModelBase
+public partial class MainViewModel : ObservableObject
 {
     public MainViewModel()
     {
@@ -31,9 +34,9 @@ public partial class MainViewModel : ViewModelBase
     public ObservableCollection<MovieItem> Movies { get; } = [];
 
     [ObservableProperty]
-    private string? movieFilter;
+    private string movieFilter = "";
 
-    partial void OnMovieFilterChanged(string? value)
+    partial void OnMovieFilterChanged(string value)
         => UpdateFilteredMovies();
 
     [ObservableProperty]
@@ -125,7 +128,12 @@ public partial class MainViewModel : ViewModelBase
     private ImmutableArray<MovieItem> GetFilteredMovies()
         => string.IsNullOrWhiteSpace(MovieFilter)
         ? Movies.ToImmutableArray()
-        : Movies.Where(x => x.Title.Contains(MovieFilter, StringComparison.CurrentCultureIgnoreCase)).ToImmutableArray();
+        : Movies.Where(IsMovieVisible).ToImmutableArray();
+
+    private bool IsMovieVisible(MovieItem movie)
+        => movie.Title.Contains(MovieFilter, StringComparison.CurrentCultureIgnoreCase)
+        || movie.Description.Contains(MovieFilter, StringComparison.CurrentCultureIgnoreCase)
+        || movie.Tags.Contains(MovieFilter, StringComparison.CurrentCultureIgnoreCase);
 
     private void UpdateFilteredMovies()
         => FilteredMovies = GetFilteredMovies();

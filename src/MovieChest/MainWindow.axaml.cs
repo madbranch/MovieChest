@@ -43,6 +43,7 @@ public partial class MainWindow : Window
         {
             Title = movie.Title,
             Description = movie.Description,
+            Tags = movie.Tags,
         };
         EditMovieDialog view = new() { DataContext = viewModel };
         if (await view.ShowDialog<bool?>(this) != true)
@@ -53,6 +54,7 @@ public partial class MainWindow : Window
         {
             Title = viewModel.Title,
             Description = viewModel.Description,
+            Tags = viewModel.Tags,
         };
     }
 
@@ -73,6 +75,7 @@ public partial class MainWindow : Window
         {
             Title = viewModel.Title,
             Description = viewModel.Description,
+            Tags = viewModel.Tags,
         };
     }
 }

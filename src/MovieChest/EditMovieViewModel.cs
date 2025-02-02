@@ -16,4 +16,16 @@ public partial class EditMovieViewModel : ObservableValidator
     [Required]
     [MaxLength(2000)]
     private string description = "";
+
+    [ObservableProperty]
+    [MaxLength(2000)]
+    private string tags = "";
+
+    [ObservableProperty]
+    [Required]
+    private string path = "";
+
+    [ObservableProperty]
+    [Required]
+    private string volumeLabel = "";
 }
