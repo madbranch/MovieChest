@@ -23,16 +23,19 @@ public partial class MovieItem : ObservableObject
 
 public partial class MainViewModel : ObservableObject
 {
-    public MainViewModel()
+    private readonly Func<EditMovieViewModel> editMovieViewModelFactory;
+
+    public MainViewModel(Func<EditMovieViewModel> editMovieViewModelFactory)
     {
         Movies.Add(new MovieItem { Title = "Kung Pow", Description = "Best movie ever." });
         Movies.Add(new MovieItem { Title = "Up", Description = "Best animation movie ever." });
 
         filteredMovies = GetFilteredMovies();
+        this.editMovieViewModelFactory = editMovieViewModelFactory;
     }
 
     public ObservableCollection<MovieItem> Movies { get; } = [];
-
+    
     [ObservableProperty]
     private string movieFilter = "";
 
@@ -78,23 +81,17 @@ public partial class MainViewModel : ObservableObject
         {
             return;
         }
-
-        if (await editMovie.HandleAsync(selectedMovie) is not MovieItem editedMovie)
+        EditMovieViewModel viewModel = editMovieViewModelFactory();
+        viewModel.Title = selectedMovie.Title;
+        viewModel.Description = selectedMovie.Description;
+        viewModel.Tags = selectedMovie.Tags;
+        if (await editMovie.HandleAsync(viewModel) is not EditMovieViewModel editedViewModel)
         {
             return;
         }
-
-        int selectedMovieIndex = Movies.IndexOf(selectedMovie);
-        
-        if (selectedMovieIndex == -1)
-        {
-            return;
-        }
-
-        SelectedMovie = null;
-        Movies[selectedMovieIndex] = editedMovie;
-        UpdateFilteredMovies();
-        SelectedMovie = editedMovie;
+        selectedMovie.Title = editedViewModel.Title;
+        selectedMovie.Description = editedViewModel.Description;
+        selectedMovie.Tags = editedViewModel.Tags;
     }
 
     private bool CanEditSelectedMovie()
@@ -103,32 +100,35 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task AddMovieAsync()
     {
-        MovieItem newMovie = new()
-        {
-            Title = "Movie Title",
-            Description = "Movie Description",
-        };
-        if (await editMovie.HandleAsync(newMovie) is not MovieItem editedMovie)
+        EditMovieViewModel viewModel = editMovieViewModelFactory();
+        viewModel.Title = "Movie Title";
+        viewModel.Description = "Movie Description";
+        if (await addMovie.HandleAsync(viewModel) is not EditMovieViewModel editedViewModel)
         {
             return;
         }
-
+        MovieItem newMovie = new()
+        {
+            Title = editedViewModel.Title,
+            Description = editedViewModel.Description,
+            Tags = editedViewModel.Tags,
+        };
         SelectedMovie = null;
         Movies.Add(newMovie);
         SelectedMovie = newMovie;
         UpdateFilteredMovies();
     }
 
-    public IInteraction<MovieItem, MovieItem?> EditMovie => editMovie;
-    private readonly Interaction<MovieItem, MovieItem?> editMovie = new();
+    public IInteraction<EditMovieViewModel, EditMovieViewModel?> EditMovie => editMovie;
+    private readonly Interaction<EditMovieViewModel, EditMovieViewModel?> editMovie = new();
 
-    public IInteraction<MovieItem, MovieItem?> AddMovie => addMovie;
-    private readonly Interaction<MovieItem, MovieItem?> addMovie = new();
+    public IInteraction<EditMovieViewModel, EditMovieViewModel?> AddMovie => addMovie;
+    private readonly Interaction<EditMovieViewModel, EditMovieViewModel?> addMovie = new();
 
     private ImmutableArray<MovieItem> GetFilteredMovies()
         => string.IsNullOrWhiteSpace(MovieFilter)
         ? Movies.ToImmutableArray()
-        : Movies.Where(IsMovieVisible).ToImmutableArray();
+        : Movies.Where(x => x.Title.Contains(MovieFilter, StringComparison.CurrentCultureIgnoreCase)).ToImmutableArray();
 
     private bool IsMovieVisible(MovieItem movie)
         => movie.Title.Contains(MovieFilter, StringComparison.CurrentCultureIgnoreCase)

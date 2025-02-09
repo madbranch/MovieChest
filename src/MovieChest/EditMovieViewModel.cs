@@ -1,10 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
 
 namespace MovieChest;
 
 public partial class EditMovieViewModel : ObservableValidator
 {
+    private readonly IDriveInfoProvider driveInfoProvider;
+
+    public EditMovieViewModel(IDriveInfoProvider driveInfoProvider)
+    {
+        this.driveInfoProvider = driveInfoProvider;
+    }
+
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [Required]
@@ -22,10 +32,29 @@ public partial class EditMovieViewModel : ObservableValidator
     private string tags = "";
 
     [ObservableProperty]
-    [Required]
-    private string path = "";
+    private Uri? path;
+
+    partial void OnPathChanged(Uri? value)
+        => VolumeLabel = value switch
+        {
+            null => "",
+            Uri path => GetVolumeLabel(path.AbsolutePath),
+        };
+
+    private string GetVolumeLabel(string absolutePath)
+    {
+        var drives = driveInfoProvider.GetDrives().OrderByDescending(x => x.RootDirectory.FullName.Length);
+        foreach (DriveInfo drive in drives)
+        {
+            if (absolutePath.StartsWith(drive.RootDirectory.FullName))
+            {
+                return drive.VolumeLabel;
+            }
+        }
+        return "";
+    }
 
     [ObservableProperty]
-    [Required]
     private string volumeLabel = "";
+
 }

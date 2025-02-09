@@ -64,7 +64,8 @@ public partial class App : Application
 
     private MainViewModel CreateViewModel()
     {
-        MainViewModel viewModel = new();
+        SystemDriveInfoProvider driveInfoProvider = new();
+        MainViewModel viewModel = new(() => new EditMovieViewModel(driveInfoProvider));
         return viewModel;
     }
 

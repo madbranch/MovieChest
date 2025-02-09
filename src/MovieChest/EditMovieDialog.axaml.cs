@@ -20,15 +20,20 @@ public partial class EditMovieDialog : Window
 
     private async void BrowseButton_Click(object? sender, RoutedEventArgs e)
     {
+        if (DataContext is not EditMovieViewModel viewModel)
+        {
+            return;
+        }
         FilePickerOpenOptions options = new()
         {
             Title = "Select Movie File",
             AllowMultiple = false,
         };
         IReadOnlyList<IStorageFile> files = await StorageProvider.OpenFilePickerAsync(options);
-        if (files.Count == 0)
+        if (files.Count <= 0)
         {
             return;
         }
+        viewModel.Path = files[0].Path;
     }
 }

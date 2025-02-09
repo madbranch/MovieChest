@@ -37,45 +37,20 @@ public partial class MainWindow : Window
         };
     }
 
-    private async Task<MovieItem?> EditMovieAsync(MovieItem movie)
+    private async Task<EditMovieViewModel?> EditMovieAsync(EditMovieViewModel viewModel)
     {
-        EditMovieViewModel viewModel = new()
-        {
-            Title = movie.Title,
-            Description = movie.Description,
-            Tags = movie.Tags,
-        };
         EditMovieDialog view = new() { DataContext = viewModel };
-        if (await view.ShowDialog<bool?>(this) != true)
-        {
-            return null;
-        }
-        return new MovieItem
-        {
-            Title = viewModel.Title,
-            Description = viewModel.Description,
-            Tags = viewModel.Tags,
-        };
+        return await view.ShowDialog<bool?>(this) == true
+            ? viewModel
+            : null;
     }
 
-    private async Task<MovieItem?> AddMovieAsync(MovieItem movie)
+    private async Task<EditMovieViewModel?> AddMovieAsync(EditMovieViewModel viewModel)
     {
-        EditMovieViewModel viewModel = new()
-        {
-            Title = movie.Title,
-            Description = movie.Description,
-        };
         EditMovieDialog view = new() { DataContext = viewModel };
         view.Title = "New Movie";
-        if (await view.ShowDialog<bool?>(this) != true)
-        {
-            return null;
-        }
-        return new MovieItem
-        {
-            Title = viewModel.Title,
-            Description = viewModel.Description,
-            Tags = viewModel.Tags,
-        };
+        return await view.ShowDialog<bool?>(this) == true
+            ? viewModel
+            : null;
     }
 }
