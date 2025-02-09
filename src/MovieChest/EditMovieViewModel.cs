@@ -43,7 +43,7 @@ public partial class EditMovieViewModel : ObservableValidator
 
     private string GetVolumeLabel(string absolutePath)
     {
-        var drives = driveInfoProvider.GetDrives().OrderByDescending(x => x.RootDirectory.FullName.Length);
+        IOrderedEnumerable<DriveInfo> drives = driveInfoProvider.GetDrives().OrderByDescending(x => x.RootDirectory.FullName.Length);
         foreach (DriveInfo drive in drives)
         {
             if (absolutePath.StartsWith(drive.RootDirectory.FullName))

@@ -9,17 +9,7 @@ using System.Threading.Tasks;
 
 namespace MovieChest;
 
-public partial class MovieItem : ObservableObject
-{
-    [ObservableProperty]
-    private string title = "";
-
-    [ObservableProperty]
-    private string description = "";
-
-    [ObservableProperty]
-    private string tags = "";
-}
+public record MovieItem(string Title, string Description, string Tags, Uri? Path, string VolumneLabel);
 
 public partial class MainViewModel : ObservableObject
 {
@@ -27,8 +17,8 @@ public partial class MainViewModel : ObservableObject
 
     public MainViewModel(Func<EditMovieViewModel> editMovieViewModelFactory)
     {
-        Movies.Add(new MovieItem { Title = "Kung Pow", Description = "Best movie ever." });
-        Movies.Add(new MovieItem { Title = "Up", Description = "Best animation movie ever." });
+        Movies.Add(new MovieItem("Kung Pow", "Best movie ever.", "", null, ""));
+        Movies.Add(new MovieItem("Up", "Best animation movie ever.", "", null, ""));
 
         filteredMovies = GetFilteredMovies();
         this.editMovieViewModelFactory = editMovieViewModelFactory;
@@ -85,13 +75,22 @@ public partial class MainViewModel : ObservableObject
         viewModel.Title = selectedMovie.Title;
         viewModel.Description = selectedMovie.Description;
         viewModel.Tags = selectedMovie.Tags;
+        viewModel.Path = selectedMovie.Path;
+        viewModel.VolumeLabel = selectedMovie.VolumneLabel;
         if (await editMovie.HandleAsync(viewModel) is not EditMovieViewModel editedViewModel)
         {
             return;
         }
-        selectedMovie.Title = editedViewModel.Title;
-        selectedMovie.Description = editedViewModel.Description;
-        selectedMovie.Tags = editedViewModel.Tags;
+        int selectedMovieIndex = Movies.IndexOf(selectedMovie);
+        if (selectedMovieIndex == -1)
+        {
+            return;
+        }
+        SelectedMovie = null;
+        MovieItem editedMovie = new MovieItem(editedViewModel.Title, editedViewModel.Description, editedViewModel.Tags, editedViewModel.Path, editedViewModel.VolumeLabel);
+        Movies[selectedMovieIndex] = editedMovie;
+        UpdateFilteredMovies();
+        SelectedMovie = editedMovie;
     }
 
     private bool CanEditSelectedMovie()
@@ -107,16 +106,11 @@ public partial class MainViewModel : ObservableObject
         {
             return;
         }
-        MovieItem newMovie = new()
-        {
-            Title = editedViewModel.Title,
-            Description = editedViewModel.Description,
-            Tags = editedViewModel.Tags,
-        };
+        MovieItem newMovie = new(editedViewModel.Title, editedViewModel.Description, editedViewModel.Tags, editedViewModel.Path, editedViewModel.VolumeLabel);
         SelectedMovie = null;
         Movies.Add(newMovie);
-        SelectedMovie = newMovie;
         UpdateFilteredMovies();
+        SelectedMovie = newMovie;
     }
 
     public IInteraction<EditMovieViewModel, EditMovieViewModel?> EditMovie => editMovie;
