@@ -11,14 +11,15 @@
         Icon="/Assets/avalonia-logo.ico"
         mc:Ignorable="d">
   <Grid RowDefinitions="Auto,*,Auto" Margin="12,8">
-    <StackPanel Orientation="Horizontal" Margin="0,0,0,4" HorizontalAlignment="Right">
-      <Button Content="Add" Command="{Binding AddMovieCommand}" />
-    </StackPanel>
+    <DockPanel LastChildFill="False" Margin="0,0,0,4">
+      <Button Content="Open" Command="{Binding OpenMovieChestFileCommand}" />
+      <Button Content="Add" Command="{Binding AddMovieCommand}" DockPanel.Dock="Right" />
+    </DockPanel>
 
     <DockPanel Grid.Row="1">
       <TextBox Text="{Binding Path=MovieFilter, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top" />
 
-      <ListBox ItemsSource="{Binding FilteredMovies}" SelectedItem="{Binding SelectedMovie}">
+      <ListBox ItemsSource="{Binding FilteredMovies}" SelectedItem="{Binding SelectedMovie}" BorderThickness="1,0,1,1">
         <ListBox.ItemTemplate>
           <DataTemplate DataType="{x:Type vm:MovieItem}">
             <StackPanel Margin="8">
@@ -37,7 +38,7 @@
 
       <UniformGrid Rows="1" DockPanel.Dock="Right">
         <Button Content="Edit" Command="{Binding EditSelectedMovieCommand}" Margin="0,0,4,0" />
-        <Button Content="Open" />
+        <Button Content="Show" />
       </UniformGrid>
     </DockPanel>
   </Grid>

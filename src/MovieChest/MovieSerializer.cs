@@ -7,8 +7,13 @@ namespace MovieChest;
 public class MovieSerializer : IMovieSerializer
 {
     public IEnumerable<MovieItem> GetMovies(Uri path)
-        => Enumerable.Empty<MovieItem>();
+    {
+        Console.WriteLine($"GetMovies: {path.AbsolutePath}");
+        return Enumerable.Empty<MovieItem>();
+    }
+
     public void SetMovies(Uri path, IEnumerable<MovieItem> movies)
     {
+        Console.WriteLine($"SetMovies: {path.AbsolutePath}");
     }
 }

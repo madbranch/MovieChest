@@ -1,5 +1,8 @@
 using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using MovieChest.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MovieChest;
@@ -17,7 +20,24 @@ public partial class MainWindow : Window
                 .DisposeWith(d);
             vm.AddMovie.Register(AddMovieAsync)
                 .DisposeWith(d);
+            vm.SelectMovieChestFile.Register(SelectMovieChestFileAsync)
+                .DisposeWith(d);
         });
+    }
+
+    private async Task<Uri?> SelectMovieChestFileAsync(Uri? uri)
+    {
+        FilePickerOpenOptions options = new()
+        {
+            Title = "Select Movie File",
+            AllowMultiple = false,
+        };
+        IReadOnlyList<IStorageFile> files = await StorageProvider.OpenFilePickerAsync(options);
+        if (files.Count <= 0)
+        {
+            return null;
+        }
+        return files[0].Path;
     }
 
     private string? SelectDatabase(string initialDirectory)
