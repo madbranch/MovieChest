@@ -14,17 +14,23 @@ public record MovieItem(string Title, string Description, string Tags, Uri? Path
 public partial class MainViewModel : ObservableObject
 {
     private readonly Func<EditMovieViewModel> editMovieViewModelFactory;
+    private readonly IMovieSerializer movieSerializer;
 
-    public MainViewModel(Func<EditMovieViewModel> editMovieViewModelFactory)
+    public MainViewModel(Func<EditMovieViewModel> editMovieViewModelFactory, IMovieSerializer movieSerializer)
     {
         Movies.Add(new MovieItem("Kung Pow", "Best movie ever.", "", null, ""));
         Movies.Add(new MovieItem("Up", "Best animation movie ever.", "", null, ""));
 
         filteredMovies = GetFilteredMovies();
         this.editMovieViewModelFactory = editMovieViewModelFactory;
+        this.movieSerializer = movieSerializer;
     }
 
-    public ObservableCollection<MovieItem> Movies { get; } = [];
+    [ObservableProperty]
+    private ObservableCollection<MovieItem> movies = [];
+
+    partial void OnMoviesChanged(ObservableCollection<MovieItem> value)
+        => UpdateFilteredMovies();
     
     [ObservableProperty]
     private string movieFilter = "";
@@ -33,12 +39,27 @@ public partial class MainViewModel : ObservableObject
         => UpdateFilteredMovies();
 
     [ObservableProperty]
+    private Uri? movieChestFile;
+
+    [ObservableProperty]
     private ImmutableArray<MovieItem> filteredMovies = [];
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DeleteSelectedMovieCommand))]
     [NotifyCanExecuteChangedFor(nameof(EditSelectedMovieCommand))]
     private MovieItem? selectedMovie;
+
+    [RelayCommand]
+    private async Task OpenMovieChestFile()
+    {
+        if (await selectMovieChestFile.HandleAsync(null) is not Uri selectedMovieChestFile)
+        {
+            return;
+        }
+        SelectedMovie = null;
+        MovieChestFile = selectedMovieChestFile;
+        Movies = movieSerializer.GetMovies(selectedMovieChestFile).ToObservableCollection();
+    }
 
     [RelayCommand(CanExecute = nameof(CanDeleteSelectedMovie))]
     private async Task DeleteSelectedMovieAsync()
@@ -56,10 +77,14 @@ public partial class MainViewModel : ObservableObject
         Movies.Remove(selectedMovie);
         SelectedMovie = null;
         UpdateFilteredMovies();
+        SerializeMovies();
     }
 
     private bool CanDeleteSelectedMovie()
         => SelectedMovie is not null;
+
+    public IInteraction<Uri?, Uri?> SelectMovieChestFile => selectMovieChestFile;
+    private readonly Interaction<Uri?, Uri?> selectMovieChestFile = new();
 
     public IInteraction<MovieItem, MovieDeletionConfirmation> ConfirmMovieDeletion => confirmMovieDeletion;
     private readonly Interaction<MovieItem, MovieDeletionConfirmation> confirmMovieDeletion = new();
@@ -91,6 +116,7 @@ public partial class MainViewModel : ObservableObject
         Movies[selectedMovieIndex] = editedMovie;
         UpdateFilteredMovies();
         SelectedMovie = editedMovie;
+        SerializeMovies();
     }
 
     private bool CanEditSelectedMovie()
@@ -111,6 +137,7 @@ public partial class MainViewModel : ObservableObject
         Movies.Add(newMovie);
         UpdateFilteredMovies();
         SelectedMovie = newMovie;
+        SerializeMovies();
     }
 
     public IInteraction<EditMovieViewModel, EditMovieViewModel?> EditMovie => editMovie;
@@ -131,4 +158,13 @@ public partial class MainViewModel : ObservableObject
 
     private void UpdateFilteredMovies()
         => FilteredMovies = GetFilteredMovies();
+
+    private void SerializeMovies()
+    {
+        if (MovieChestFile is not Uri movieChestFile)
+        {
+            return;
+        }
+        movieSerializer.SetMovies(movieChestFile, Movies);
+    }
 }

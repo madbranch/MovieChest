@@ -65,7 +65,8 @@ public partial class App : Application
     private MainViewModel CreateViewModel()
     {
         SystemDriveInfoProvider driveInfoProvider = new();
-        MainViewModel viewModel = new(() => new EditMovieViewModel(driveInfoProvider));
+        MovieSerializer movieSerializer = new();
+        MainViewModel viewModel = new(() => new EditMovieViewModel(driveInfoProvider), movieSerializer);
         return viewModel;
     }
 
