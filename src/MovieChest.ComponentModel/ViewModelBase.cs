@@ -29,6 +29,6 @@ public class ViewModelBase : ObservableValidator, ICompositeDisposable
     void ICompositeDisposable.Add(IDisposable disposable)
         => compositeDisposable.Add(disposable);
 
-    void ICompositeDisposable.Remove(IDisposable disposable)
+    bool ICompositeDisposable.Remove(IDisposable disposable)
         => compositeDisposable.Remove(disposable);
 }

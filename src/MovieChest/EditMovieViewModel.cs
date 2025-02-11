@@ -32,21 +32,21 @@ public partial class EditMovieViewModel : ObservableValidator
     private string tags = "";
 
     [ObservableProperty]
-    private Uri? path;
+    private string? path;
 
-    partial void OnPathChanged(Uri? value)
+    partial void OnPathChanged(string? value)
         => VolumeLabel = value switch
         {
             null => "",
-            Uri path => GetVolumeLabel(path.AbsolutePath),
+            string path => GetVolumeLabel(path),
         };
 
-    private string GetVolumeLabel(string absolutePath)
+    private string GetVolumeLabel(string path)
     {
         IOrderedEnumerable<DriveInfo> drives = driveInfoProvider.GetDrives().OrderByDescending(x => x.RootDirectory.FullName.Length);
         foreach (DriveInfo drive in drives)
         {
-            if (absolutePath.StartsWith(drive.RootDirectory.FullName))
+            if (path.StartsWith(drive.RootDirectory.FullName))
             {
                 return drive.VolumeLabel;
             }

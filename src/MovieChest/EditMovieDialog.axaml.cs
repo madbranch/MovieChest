@@ -1,7 +1,5 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using System.Collections.Generic;
 
@@ -34,6 +32,6 @@ public partial class EditMovieDialog : Window
         {
             return;
         }
-        viewModel.Path = files[0].Path;
+        viewModel.Path = files[0].TryGetLocalPath();
     }
 }

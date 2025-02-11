@@ -25,7 +25,7 @@ public partial class MainWindow : Window
         });
     }
 
-    private async Task<Uri?> SelectMovieChestFileAsync(Uri? uri)
+    private async Task<string?> SelectMovieChestFileAsync(string? pth)
     {
         FilePickerOpenOptions options = new()
         {
@@ -37,7 +37,7 @@ public partial class MainWindow : Window
         {
             return null;
         }
-        return files[0].Path;
+        return files[0].TryGetLocalPath();
     }
 
     private string? SelectDatabase(string initialDirectory)

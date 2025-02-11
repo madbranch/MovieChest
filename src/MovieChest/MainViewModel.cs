@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MovieChest;
 
-public record MovieItem(string Title, string Description, string Tags, Uri? Path, string VolumneLabel);
+public record MovieItem(string Title, string Description, string Tags, string? Path, string VolumeLabel);
 
 public partial class MainViewModel : ObservableObject
 {
@@ -39,7 +39,7 @@ public partial class MainViewModel : ObservableObject
         => UpdateFilteredMovies();
 
     [ObservableProperty]
-    private Uri? movieChestFile;
+    private string? movieChestFile;
 
     [ObservableProperty]
     private ImmutableArray<MovieItem> filteredMovies = [];
@@ -52,7 +52,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task OpenMovieChestFile()
     {
-        if (await selectMovieChestFile.HandleAsync(null) is not Uri selectedMovieChestFile)
+        if (await selectMovieChestFile.HandleAsync(null) is not string selectedMovieChestFile)
         {
             return;
         }
@@ -83,8 +83,8 @@ public partial class MainViewModel : ObservableObject
     private bool CanDeleteSelectedMovie()
         => SelectedMovie is not null;
 
-    public IInteraction<Uri?, Uri?> SelectMovieChestFile => selectMovieChestFile;
-    private readonly Interaction<Uri?, Uri?> selectMovieChestFile = new();
+    public IInteraction<string?, string?> SelectMovieChestFile => selectMovieChestFile;
+    private readonly Interaction<string?, string?> selectMovieChestFile = new();
 
     public IInteraction<MovieItem, MovieDeletionConfirmation> ConfirmMovieDeletion => confirmMovieDeletion;
     private readonly Interaction<MovieItem, MovieDeletionConfirmation> confirmMovieDeletion = new();
@@ -101,7 +101,7 @@ public partial class MainViewModel : ObservableObject
         viewModel.Description = selectedMovie.Description;
         viewModel.Tags = selectedMovie.Tags;
         viewModel.Path = selectedMovie.Path;
-        viewModel.VolumeLabel = selectedMovie.VolumneLabel;
+        viewModel.VolumeLabel = selectedMovie.VolumeLabel;
         if (await editMovie.HandleAsync(viewModel) is not EditMovieViewModel editedViewModel)
         {
             return;
@@ -161,7 +161,7 @@ public partial class MainViewModel : ObservableObject
 
     private void SerializeMovies()
     {
-        if (MovieChestFile is not Uri movieChestFile)
+        if (MovieChestFile is not string movieChestFile)
         {
             return;
         }

@@ -9,6 +9,7 @@
         d:DesignHeight="450"
         x:DataType="vm:EditMovieViewModel"
         SizeToContent="Height"
+        CanResize="False"
         Width="500"
         mc:Ignorable="d">
   <StackPanel Margin="12,8,12,8">
@@ -47,7 +48,7 @@
              HorizontalAlignment="Left"
              VerticalAlignment="Center" />
       <Grid Grid.Row="6" Grid.Column="2" ColumnDefinitions="*,Auto">
-        <TextBlock Text="{Binding Path.AbsolutePath}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+        <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
         <Button x:Name="BrowseButton"
                 Grid.Column="1"
                 Content="Browse..."
