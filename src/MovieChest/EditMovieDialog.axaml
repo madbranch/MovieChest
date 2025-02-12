@@ -48,7 +48,10 @@
              HorizontalAlignment="Left"
              VerticalAlignment="Center" />
       <Grid Grid.Row="6" Grid.Column="2" ColumnDefinitions="*,Auto">
-        <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+        <TextBlock Text="{Binding Path}"
+                   TextTrimming="CharacterEllipsis"
+                   Margin="0,0,4,0"
+                   VerticalAlignment="Center" />
         <Button x:Name="BrowseButton"
                 Grid.Column="1"
                 Content="Browse..."
