@@ -7,9 +7,18 @@ namespace MovieChest;
 
 public class MovieSerializer : IMovieSerializer
 {
+    private readonly Func<string, SqliteConnection> connectionFactory;
+
+    public MovieSerializer()
+        : this(path => new SqliteConnection($"Data Source='{path}'"))
+    {}
+
+    public MovieSerializer(Func<string, SqliteConnection> connectionFactory)
+        => this.connectionFactory = connectionFactory;
+
     public IEnumerable<MovieItem> GetMovies(string path)
     {
-        //using SqliteConnection connection = new();
+        using SqliteConnection connection = connectionFactory(path);
         return Enumerable.Empty<MovieItem>();
     }
 
