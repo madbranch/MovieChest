@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using MovieChest.ComponentModel;
 using System;
@@ -73,4 +74,7 @@ public partial class MainWindow : Window
             ? viewModel
             : null;
     }
+
+    private void MovieItem_DoubleTapped(object? sender, TappedEventArgs e)
+        => (DataContext as MainViewModel)?.EditSelectedMovieCommand.Execute(null);
 }

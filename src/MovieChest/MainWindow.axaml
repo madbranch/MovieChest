@@ -12,7 +12,7 @@
         mc:Ignorable="d">
   <Grid RowDefinitions="Auto,*,Auto" Margin="12,8">
     <DockPanel LastChildFill="False" Margin="0,0,0,4">
-      <Button Content="Open" Command="{Binding OpenMovieChestFileCommand}" />
+      <Button Content="Open Chest" Command="{Binding OpenMovieChestFileCommand}" />
       <Button Content="Add" Command="{Binding AddMovieCommand}" DockPanel.Dock="Right" />
     </DockPanel>
 
@@ -22,10 +22,12 @@
       <ListBox ItemsSource="{Binding FilteredMovies}" SelectedItem="{Binding SelectedMovie}" BorderThickness="1,0,1,1">
         <ListBox.ItemTemplate>
           <DataTemplate DataType="{x:Type vm:MovieItem}">
-            <StackPanel Margin="8">
-              <TextBlock Text="{Binding Title}" FontWeight="Bold" />
-              <TextBlock Text="{Binding Description}" />
-            </StackPanel>
+            <Border DoubleTapped="MovieItem_DoubleTapped" Background="Transparent" Padding="8">
+              <StackPanel>
+                <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+                <TextBlock Text="{Binding Description}" />
+              </StackPanel>
+            </Border>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
