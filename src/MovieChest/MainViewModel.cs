@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MovieChest;
 
-public record MovieItem(string Title, string Description, string Tags, string? Path, string VolumeLabel);
+public record MovieItem(string Title, string Description, string Tags, string? Path, string? VolumeLabel);
 
 public partial class MainViewModel : ObservableObject
 {
@@ -50,6 +50,20 @@ public partial class MainViewModel : ObservableObject
     private MovieItem? selectedMovie;
 
     [RelayCommand]
+    private async Task NewMovieChestFile()
+    {
+        if (await selectNewMovieChestFile.HandleAsync(null) is not string selectedNewMovieChestFile)
+        {
+            return;
+        }
+        SelectedMovie = null;
+        MovieChestFile = null;
+        Movies = [];
+        MovieChestFile = selectedNewMovieChestFile;
+        SerializeMovies();
+    }
+
+    [RelayCommand]
     private async Task OpenMovieChestFile()
     {
         if (await selectMovieChestFile.HandleAsync(null) is not string selectedMovieChestFile)
@@ -85,6 +99,9 @@ public partial class MainViewModel : ObservableObject
 
     public IInteraction<string?, string?> SelectMovieChestFile => selectMovieChestFile;
     private readonly Interaction<string?, string?> selectMovieChestFile = new();
+
+    public IInteraction<string?, string?> SelectNewMovieChestFile => selectNewMovieChestFile;
+    private readonly Interaction<string?, string?> selectNewMovieChestFile = new(); 
 
     public IInteraction<MovieItem, MovieDeletionConfirmation> ConfirmMovieDeletion => confirmMovieDeletion;
     private readonly Interaction<MovieItem, MovieDeletionConfirmation> confirmMovieDeletion = new();
@@ -148,8 +165,8 @@ public partial class MainViewModel : ObservableObject
 
     private ImmutableArray<MovieItem> GetFilteredMovies()
         => string.IsNullOrWhiteSpace(MovieFilter)
-        ? Movies.ToImmutableArray()
-        : Movies.Where(x => x.Title.Contains(MovieFilter, StringComparison.CurrentCultureIgnoreCase)).ToImmutableArray();
+        ? [.. Movies]
+        : [.. Movies.Where(IsMovieVisible)];
 
     private bool IsMovieVisible(MovieItem movie)
         => movie.Title.Contains(MovieFilter, StringComparison.CurrentCultureIgnoreCase)

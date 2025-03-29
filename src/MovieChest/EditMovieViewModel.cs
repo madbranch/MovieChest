@@ -55,6 +55,6 @@ public partial class EditMovieViewModel : ObservableValidator
     }
 
     [ObservableProperty]
-    private string volumeLabel = "";
+    private string? volumeLabel;
 
 }

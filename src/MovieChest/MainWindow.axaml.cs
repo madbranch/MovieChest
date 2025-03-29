@@ -23,7 +23,25 @@ public partial class MainWindow : Window
                 .DisposeWith(d);
             vm.SelectMovieChestFile.Register(SelectMovieChestFileAsync)
                 .DisposeWith(d);
+            vm.SelectNewMovieChestFile.Register(SelectNewMovieChestFileAsync)
+                .DisposeWith(d);
         });
+    }
+
+    private async Task<string?> SelectNewMovieChestFileAsync(string? arg)
+    {
+        FilePickerSaveOptions options = new()
+        {
+            Title = "Select New Movie File",
+            DefaultExtension = ".mcdb",
+            FileTypeChoices = [new FilePickerFileType("Movie Chest Database") { Patterns = ["*.mcdb"]}],
+            ShowOverwritePrompt = true
+        };
+        if (await StorageProvider.SaveFilePickerAsync(options) is not IStorageFile file)
+        {
+            return null;
+        }
+        return file.TryGetLocalPath();
     }
 
     private async Task<string?> SelectMovieChestFileAsync(string? pth)
@@ -39,11 +57,6 @@ public partial class MainWindow : Window
             return null;
         }
         return files[0].TryGetLocalPath();
-    }
-
-    private string? SelectDatabase(string initialDirectory)
-    {
-        return null;
     }
 
     private async Task<MovieDeletionConfirmation> ConfirmMovieDeletionAsync(MovieItem movie)

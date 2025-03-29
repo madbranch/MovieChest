@@ -12,6 +12,7 @@
         mc:Ignorable="d">
   <Grid RowDefinitions="Auto,*,Auto" Margin="12,8">
     <DockPanel LastChildFill="False" Margin="0,0,0,4">
+      <Button Content="New Chest" Command="{Binding NewMovieChestFileCommand}" Margin="0,0,8,0" />
       <Button Content="Open Chest" Command="{Binding OpenMovieChestFileCommand}" />
       <Button Content="Add" Command="{Binding AddMovieCommand}" DockPanel.Dock="Right" />
     </DockPanel>
