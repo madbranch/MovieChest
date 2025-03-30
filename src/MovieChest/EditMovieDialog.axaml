@@ -8,12 +8,14 @@
         d:DesignWidth="800"
         d:DesignHeight="450"
         x:DataType="vm:EditMovieViewModel"
-        SizeToContent="Height"
-        CanResize="False"
+        CanResize="True"
         Width="500"
+        Height="300"
+        MinWidth="500"
+        MinHeight="300"
         mc:Ignorable="d">
-  <StackPanel Margin="12,8,12,8">
-    <Grid RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,4,Auto" ColumnDefinitions="Auto,4,*" Margin="0,0,0,8">
+  <Grid RowDefinitions="*,Auto" Margin="12,8,12,8">
+    <Grid RowDefinitions="Auto,8,*,8,Auto,8,Auto,4,Auto" ColumnDefinitions="Auto,4,*" Margin="0,0,0,8">
       <Label Target="TitleInput"
              Content="Title"
              HorizontalAlignment="Left"
@@ -25,13 +27,16 @@
       <Label Grid.Row="2"
              Target="DescriptionInput"
              Content="Description"
+             Height="24"
              HorizontalAlignment="Left"
-             VerticalAlignment="Center" />
+             VerticalAlignment="Top"
+             VerticalContentAlignment="Center" />
       <TextBox x:Name="DescriptionInput"
                Grid.Row="2"
                Grid.Column="2"
-               Text="{Binding Description}"
-               VerticalAlignment="Center" />
+               AcceptsReturn="True"
+               MaxLength="2000"
+               Text="{Binding Description}" />
       <Label Grid.Row="4"
              Target="TagsInput"
              Content="Tags"
@@ -67,7 +72,7 @@
                  HorizontalAlignment="Left"
                  VerticalAlignment="Center" />
     </Grid>
-    <UniformGrid Rows="1" HorizontalAlignment="Right">
+    <UniformGrid Grid.Row="1" Rows="1" HorizontalAlignment="Right">
       <Button x:Name="CancelButton"
               Content="Cancel"
               IsCancel="True"
@@ -81,5 +86,5 @@
               Click="OkButton_Click"
               VerticalAlignment="Center" />
     </UniformGrid>
-  </StackPanel>
+  </Grid>
 </Window>
