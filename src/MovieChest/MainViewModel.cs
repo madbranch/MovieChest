@@ -18,9 +18,6 @@ public partial class MainViewModel : ObservableObject
 
     public MainViewModel(Func<EditMovieViewModel> editMovieViewModelFactory, IMovieSerializer movieSerializer)
     {
-        Movies.Add(new MovieItem("Kung Pow", "Best movie ever.", "", null, ""));
-        Movies.Add(new MovieItem("Up", "Best animation movie ever.", "", null, ""));
-
         filteredMovies = GetFilteredMovies();
         this.editMovieViewModelFactory = editMovieViewModelFactory;
         this.movieSerializer = movieSerializer;
