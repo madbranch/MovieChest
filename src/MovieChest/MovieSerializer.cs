@@ -1,32 +1,69 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MovieChest;
 
-public class MovieSerializer : IMovieSerializer
+public class MovieSerializer(Func<SqliteConnectionStringBuilder, string, SqliteConnectionStringBuilder> createConnectionString) : IMovieSerializer
 {
-    private readonly Func<SqliteConnectionStringBuilder, string, SqliteConnectionStringBuilder> createConnectionString;
+    private readonly Func<SqliteConnectionStringBuilder, string, SqliteConnectionStringBuilder> createConnectionString = createConnectionString;
 
     public MovieSerializer()
         : this(CreateDefaultConnectionString)
-    {}
-
-    public MovieSerializer(Func<SqliteConnectionStringBuilder, string, SqliteConnectionStringBuilder> createConnectionString)
-        => this.createConnectionString = createConnectionString;
+    { }
 
     public IEnumerable<MovieItem> GetMovies(string path)
     {
         using SqliteConnection connection = CreateReadOnlyConnection(path);
-        return Enumerable.Empty<MovieItem>();
+        connection.Open();
+        if (!HasMovieTable(connection))
+        {
+            yield break;
+        }
+        SqliteCommand command = connection.CreateCommand();
+        command.CommandText = """select title, description, tags, path, volume_label from Movie""";
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            if (reader.IsDBNull(3) || reader.IsDBNull(4))
+            {
+                yield return new MovieItem(
+                    reader.GetString(0),
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    null,
+                    null
+                );
+            }
+            else
+            {
+                yield return new MovieItem(
+                    reader.GetString(0),
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    reader.GetString(3),
+                    reader.GetString(4)
+                );
+            }
+        }
+    }
+
+    private static bool HasMovieTable(SqliteConnection connection)
+      => TableExists(connection, "Movie");
+
+    private static bool TableExists(SqliteConnection connection, string tableName)
+    {
+        SqliteCommand command = connection.CreateCommand();
+        command.CommandText = $"select name from sqlite_master where type='table' and name='{tableName}';";
+        using SqliteDataReader reader = command.ExecuteReader();
+        return reader.HasRows;
     }
 
     private SqliteConnection CreateReadOnlyConnection(string path)
     {
         SqliteConnectionStringBuilder builder = new();
         builder.Mode = SqliteOpenMode.ReadOnly;
-        builder = createConnectionString(builder, path);        
+        builder = createConnectionString(builder, path);
         return new(builder.ConnectionString);
     }
 
@@ -34,27 +71,28 @@ public class MovieSerializer : IMovieSerializer
     {
         using SqliteConnection connection = CreateWriteConnection(path);
         connection.Open();
-        using var transaction = connection.BeginTransaction();
+        using SqliteTransaction transaction = connection.BeginTransaction();
         CreateMovieTableIfNotExists(connection);
         ClearMovieTable(connection);
         InsertMovies(connection, movies);
+        transaction.Commit();
     }
 
-    private void CreateMovieTableIfNotExists(SqliteConnection connection)
+    private static void CreateMovieTableIfNotExists(SqliteConnection connection)
     {
-        var command = connection.CreateCommand();
+        SqliteCommand command = connection.CreateCommand();
         command.CommandText = """create table if not exists Movie(id integer primary key, title text not null, description text not null, tags text not null, path text, volume_label text)""";
         command.ExecuteNonQuery();
     }
 
-    private void ClearMovieTable(SqliteConnection connection)
+    private static void ClearMovieTable(SqliteConnection connection)
     {
         SqliteCommand command = connection.CreateCommand();
         command.CommandText = """delete from Movie""";
         command.ExecuteNonQuery();
     }
-    
-    private void InsertMovies(SqliteConnection connection, IEnumerable<MovieItem> movies)
+
+    private static void InsertMovies(SqliteConnection connection, IEnumerable<MovieItem> movies)
     {
         foreach (MovieItem movie in movies)
         {
@@ -95,7 +133,7 @@ public class MovieSerializer : IMovieSerializer
         {
             Mode = SqliteOpenMode.ReadWriteCreate,
         };
-        builder = createConnectionString(builder, path);        
+        builder = createConnectionString(builder, path);
         return new(builder.ConnectionString);
     }
 
